@@ -7,7 +7,7 @@ resource "proxmox_vm_qemu" "vms" {
   clone = var.clone
   iso = var.iso
   full_clone = false
-  hastate = "ignored"
+  hastate = "disabled"
   #qemu_os = "other"
 
   #CPU settings
