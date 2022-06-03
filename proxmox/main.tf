@@ -2,7 +2,7 @@ resource "proxmox_vm_qemu" "vms" {
   name = var.name
 
   #Provisionning settings
-  os_type = var.snippet != "" ? "cloud-init" : ""
+  os_type = var.snippet_filename != "" ? "cloud-init" : ""
   target_node = var.target_node
   clone = var.clone
   iso = var.iso
