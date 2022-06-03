@@ -63,8 +63,8 @@ resource "proxmox_vm_qemu" "vms" {
   #searchdomain = "pmx2"
   
   #Cloud-init settings
-  cicustom = var.snippet != "" ? "user=local:snippets/${reverse(split("/", var.snippet))[0]}" : ""
-  force_recreate_on_change_of = var.snippet != "" ? sha256(file("${var.snippet}")) : ""
+  cicustom = var.snippet_filename != "" ? "user=local:snippets/${var.snippet_filename}" : ""
+  force_recreate_on_change_of = var.snippet_filename != "" ? var.snippet_sha256 : ""
   ipconfig0 = var.snippet != "" ? "ip=dhcp" : ""
   ciuser = var.snippet != "" ? "ubuntu" : ""
   sshkeys = var.snippet != "" ? file(var.bastion.ssh_public_key) : "" #Temp

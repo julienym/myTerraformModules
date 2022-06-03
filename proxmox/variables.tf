@@ -2,10 +2,16 @@
 #   type = string
 # }
 
-variable "snippet" {
+variable "snippet_filename" {
   type = string
   default = ""
-  description = "Snippet location"
+  description = "Snippet filename"
+}
+
+variable "snippet_sha256" {
+  type = string
+  default = ""
+  description = "SHA256 of snippet for force recreation"
 }
 
 variable "name" {
