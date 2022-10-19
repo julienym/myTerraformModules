@@ -23,6 +23,13 @@ variable "target_node" {
 variable "bridge" {
   type = string
 }
+
+variable "vlan" {
+  type = number
+  default = "-1"
+  description = "VLAN tag"
+}
+
 variable "clone" {
   type = string
   default = null
@@ -52,6 +59,10 @@ variable "onboot" {
 variable "macaddr" {
   type = string
   default = ""
+  # validation {
+  #   condition     = length(regexall("^([a-f0-9][26ae])(:[a-f0-9]{2}){5}$", var.macaddr)) == 2
+  #   error_message = "The MAC address should match a Locally Administered Address Ranges (x[26ae]x:xx:xx:xx:xx:xx)!"
+  # }
 }
 
 variable "domain_name" {
@@ -70,7 +81,7 @@ variable "data_disk" {}
 
 variable "agent" {
   type = string
-  default = "0" #DEBUG to do
+  default = "1"
 }
 
 variable "provision_verification" {

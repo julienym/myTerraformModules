@@ -20,6 +20,11 @@ variable "values" {
   default = {}
 }
 
+variable "secret_values" {
+  default = {}
+  sensitive = true
+}
+
 variable "values_file" {
   type = string
   default = ""

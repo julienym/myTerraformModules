@@ -16,7 +16,7 @@ resource "rke_cluster" "this" {
       ssh_key = file(var.bastion.ssh_private_key)
     }
   }
-  kubernetes_version = "v1.20.12-rancher1-1"
+  kubernetes_version = "v1.23.6-rancher1-1"
   # services {
   #   kube_api {
   #     extra_args = {  
@@ -33,11 +33,11 @@ resource "rke_cluster" "this" {
   authentication {
     sans = [ var.api_domain ]
   }
-  # bastion_host {
-  #   address = var.bastion.host
-  #   user = var.bastion.user
-  #   ssh_key = file(var.bastion.ssh_private_key)
-  # }
+  bastion_host {
+    address = var.bastion.host
+    user = var.bastion.user
+    ssh_key = file(var.bastion.ssh_private_key)
+  }
   upgrade_strategy {
       drain = false
   }
