@@ -55,7 +55,15 @@ variable "storage" {
 variable "onboot" {
   type = bool
   default = false
+  description = "Start VM on boot"
 }
+
+variable "startup" {
+  type = string
+  default = null
+  description = "Startup delay options"
+}
+
 variable "macaddr" {
   type = string
   default = ""
@@ -68,14 +76,7 @@ variable "macaddr" {
 variable "domain_name" {
   type = string
 }
-variable "bastion" {
-  type = map(string)
-  default = {
-    host = ""
-    user = ""
-    port = ""
-  }
-}
+
 
 variable "data_disk" {}
 
@@ -85,11 +86,48 @@ variable "agent" {
 }
 
 variable "provision_verification" {
-  type = string
-  default = "cloud-init status --wait > /dev/null"
+  type = list(string)
+  default = ["cloud-init status --wait > /dev/null"]
 }
 
-variable "ssh_user" {
+#SSH
+variable "ssh" {
+  type = map(string)
+  default = {
+    user = "ubuntu"
+    port = 22
+    public_key = "~/.ssh/id_rsa.pub"
+    private_key = "~/.ssh/id_rsa"
+  }
+}
+
+variable "bastion" {
+  type = map(string)
+  default = {
+    host = ""
+    user = ""
+    port = ""
+    public_key = "~/.ssh/id_rsa.pub"
+    private_key = "~/.ssh/id_rsa"
+  }
+}
+
+variable "ipconfig" {
   type = string
-  default = "ubuntu"
+  default = "dhcp"
+}
+
+variable "gateway" {
+  type = string
+  default = null
+}
+
+variable "dns" {
+  type = string
+  default = null
+}
+
+variable "bootdisk" {
+  type = string
+  default = "scsi0"
 }

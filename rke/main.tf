@@ -6,12 +6,12 @@ resource "rke_cluster" "this" {
     for_each = var.nodes
     
     content {  
-      address = "${nodes.key}.${var.domain_name}"
-      node_name = "${nodes.key}.${var.domain_name}"
+      address = "${nodes.key}"
+      node_name = "${nodes.key}"
       user    = "ubuntu"
       role    = nodes.value["roles"]
       labels = {
-        vmId = nodes.value["vmCode"]
+        vmId = try(nodes.value["vmCode"], "unmanaged")
       }
       ssh_key = file(var.bastion.ssh_private_key)
     }
@@ -35,6 +35,7 @@ resource "rke_cluster" "this" {
   }
   bastion_host {
     address = var.bastion.host
+    port = var.bastion.port
     user = var.bastion.user
     ssh_key = file(var.bastion.ssh_private_key)
   }
