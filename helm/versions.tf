@@ -1,6 +1,6 @@
 terraform {
   required_providers {
-    proxmox = {
+    helm = {
       source = "hashicorp/helm"
       version = "= 0.10.6"
     }
