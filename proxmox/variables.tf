@@ -1,17 +1,7 @@
-# variable "cloudInitFilePath" {
-#   type = string
-# }
-
 variable "snippet_filename" {
   type = string
   default = ""
   description = "Snippet filename"
-}
-
-variable "snippet_sha256" {
-  type = string
-  default = ""
-  description = "SHA256 of snippet for force recreation"
 }
 
 variable "name" {
@@ -35,11 +25,7 @@ variable "clone" {
   default = null
   description = "VM Clone template name"
 }
-variable "iso" {
-  type = string
-  default = null
-  description = "ISO file path on the hypervisor"
-}
+
 variable "disk_gb" {
   type = number
 }
@@ -66,17 +52,12 @@ variable "startup" {
 
 variable "macaddr" {
   type = string
-  default = ""
-  # validation {
-  #   condition     = length(regexall("^([a-f0-9][26ae])(:[a-f0-9]{2}){5}$", var.macaddr)) == 2
-  #   error_message = "The MAC address should match a Locally Administered Address Ranges (x[26ae]x:xx:xx:xx:xx:xx)!"
-  # }
+  default = null
 }
 
 variable "domain_name" {
   type = string
 }
-
 
 variable "data_disk" {}
 

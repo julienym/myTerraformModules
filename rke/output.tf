@@ -10,11 +10,10 @@ output "ca_crt" {
   value = rke_cluster.this.ca_crt 
 }
 
-
-# output "kubeconfig" {
-#   value = rke_cluster.this.kube_config_yaml
-#   sensitive = true
-# }
+output "kubeconfig" {
+  value = rke_cluster.this.kube_config_yaml
+  sensitive = true
+}
 
 output "api_url" {
   value = rke_cluster.this.api_server_url
