@@ -1,8 +1,8 @@
 terraform {
   required_providers {
-    proxmox = {
-      source  = "Telmate/proxmox"
-      version = "= 2.9.11"
+    helm = {
+      source  = "hashicorp/helm"
+      version = "= 2.10.1"
     }
   }
   required_version = ">= 0.13"
