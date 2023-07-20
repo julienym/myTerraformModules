@@ -14,7 +14,7 @@ resource "proxmox_vm_qemu" "vms" {
 
   #RAM settings
   memory = var.ram_mb
-  balloon = 1
+  balloon = var.ram_balloon
 
   #Disk settings
   disk {

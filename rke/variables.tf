@@ -17,3 +17,9 @@ variable "domain_name" {
 variable "api_domain" {
   type = string
 }
+
+variable "ram_balloon" {
+  type = number
+  default = 1
+  description = "Should memory ballooing be enable ? 1 = true" 
+}
