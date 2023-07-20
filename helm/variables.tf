@@ -3,7 +3,7 @@ variable "name" {
 }
 
 variable "repository" {
-  type = string
+  type    = string
   default = null
 }
 
@@ -12,7 +12,7 @@ variable "chart" {
 }
 
 variable "chart_version" {
-  type = string
+  type    = string
   default = null
 }
 
@@ -21,12 +21,12 @@ variable "values" {
 }
 
 variable "secret_values" {
-  default = {}
+  default   = {}
   sensitive = true
 }
 
 variable "values_file" {
-  type = string
+  type    = string
   default = ""
 }
 

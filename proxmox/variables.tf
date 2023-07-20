@@ -1,6 +1,6 @@
 variable "snippet_filename" {
-  type = string
-  default = ""
+  type        = string
+  default     = ""
   description = "Snippet filename"
 }
 
@@ -15,14 +15,14 @@ variable "bridge" {
 }
 
 variable "vlan" {
-  type = number
-  default = "-1"
+  type        = number
+  default     = "-1"
   description = "VLAN tag"
 }
 
 variable "clone" {
-  type = string
-  default = null
+  type        = string
+  default     = null
   description = "VM Clone template name"
 }
 
@@ -39,19 +39,19 @@ variable "storage" {
   type = string
 }
 variable "onboot" {
-  type = bool
-  default = false
+  type        = bool
+  default     = false
   description = "Start VM on boot"
 }
 
 variable "startup" {
-  type = string
-  default = null
+  type        = string
+  default     = null
   description = "Startup delay options"
 }
 
 variable "macaddr" {
-  type = string
+  type    = string
   default = null
 }
 
@@ -62,12 +62,12 @@ variable "domain_name" {
 variable "data_disk" {}
 
 variable "agent" {
-  type = string
+  type    = string
   default = "1"
 }
 
 variable "provision_verification" {
-  type = list(string)
+  type    = list(string)
   default = ["cloud-init status --wait > /dev/null"]
 }
 
@@ -75,9 +75,9 @@ variable "provision_verification" {
 variable "ssh" {
   type = map(string)
   default = {
-    user = "ubuntu"
-    port = 22
-    public_key = "~/.ssh/id_rsa.pub"
+    user        = "ubuntu"
+    port        = 22
+    public_key  = "~/.ssh/id_rsa.pub"
     private_key = "~/.ssh/id_rsa"
   }
 }
@@ -85,30 +85,36 @@ variable "ssh" {
 variable "bastion" {
   type = map(string)
   default = {
-    host = ""
-    user = ""
-    port = ""
-    public_key = "~/.ssh/id_rsa.pub"
+    host        = ""
+    user        = ""
+    port        = ""
+    public_key  = "~/.ssh/id_rsa.pub"
     private_key = "~/.ssh/id_rsa"
   }
 }
 
 variable "ipconfig" {
-  type = string
+  type    = string
   default = "dhcp"
 }
 
 variable "gateway" {
-  type = string
+  type    = string
   default = null
 }
 
 variable "dns" {
-  type = string
+  type    = string
   default = null
 }
 
 variable "bootdisk" {
-  type = string
+  type    = string
   default = "scsi0"
+}
+
+variable "ram_balloon" {
+  type        = number
+  default     = 1
+  description = "Should memory ballooing be enable ? 1 = true"
 }
