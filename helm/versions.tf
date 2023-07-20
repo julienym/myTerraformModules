@@ -1,8 +1,8 @@
 terraform {
   required_providers {
-    rke = {
-      source = "rancher/rke"
-      version = "= 1.4.2"
+    proxmox = {
+      source = "hashicorp/helm"
+      version = "= 0.10.6"
     }
   }
   required_version = ">= 0.13"
