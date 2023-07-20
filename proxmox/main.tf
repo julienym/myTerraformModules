@@ -23,6 +23,7 @@ resource "proxmox_vm_qemu" "vms" {
     storage = var.storage
     cache = "writeback"
     discard = "on" #assume SSD
+    backup = false
   }
 
   dynamic "disk" {
@@ -34,6 +35,7 @@ resource "proxmox_vm_qemu" "vms" {
       storage = disk.value.storage
       cache = disk.value.cache
       discard = "on" #assume SSD
+      backup = true #assume data disk
     }
   }
   bootdisk = var.bootdisk
