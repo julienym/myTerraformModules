@@ -20,14 +20,10 @@ variable "values" {
   default = {}
 }
 
-variable "secret_values" {
-  default   = {}
+variable "secrets_list" {
+  type    = list(string)
+  default = []
   sensitive = true
-}
-
-variable "values_file" {
-  type    = string
-  default = ""
 }
 
 variable "namespace" {
