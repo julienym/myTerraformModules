@@ -21,8 +21,8 @@ variable "values" {
 }
 
 variable "secrets_list" {
-  type    = list(string)
-  default = []
+  type      = list(string)
+  default   = []
   sensitive = true
 }
 

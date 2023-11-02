@@ -1,4 +1,6 @@
 resource "proxmox_vm_qemu" "vms" {
+  depends_on = [ssh_resource.cloud_init_snippet]
+
   name = "${var.name}.${var.domain_name}"
 
   #Provisionning settings
@@ -51,30 +53,24 @@ resource "proxmox_vm_qemu" "vms" {
   }
 
   #Cloud-init settings by snippet
-  cicustom                = var.snippet_filename != "" ? "user=local:snippets/${var.snippet_filename}" : null
-  cloudinit_cdrom_storage = var.storage
-  ipconfig0               = "${var.gateway != null ? "gw=${var.gateway}," : ""}ip=${var.ipconfig}"
+  cicustom = var.snippet_path
 
-  #User datas
-  ciuser  = var.ssh.user
-  sshkeys = file(var.ssh.public_key)
-
+  #User data
+  ciuser       = var.ssh.user
+  sshkeys      = file(var.ssh.public_key)
   nameserver   = var.dns
   searchdomain = var.domain_name
+  ipconfig0    = "${var.gateway != null ? "gw=${var.gateway}," : ""}ip=${var.ipconfig}"
 
   provisioner "remote-exec" {
     inline = var.provision_verification
   }
 
   connection {
-    type                = "ssh"
-    user                = var.ssh.user
-    private_key         = file(var.ssh.private_key)
-    host                = "${var.name}.${var.domain_name}"
-    port                = var.ssh.port
-    bastion_host        = var.bastion.host != "" ? var.bastion.host : null
-    bastion_user        = var.bastion.host != "" ? var.bastion.user : null
-    bastion_port        = var.bastion.host != "" ? var.bastion.port : null
-    bastion_private_key = var.bastion.host != "" ? file(var.bastion.private_key) : ""
+    type        = "ssh"
+    user        = var.ssh.user
+    private_key = file(var.ssh.private_key)
+    host        = self.default_ipv4_address
+    port        = var.ssh.port
   }
 }

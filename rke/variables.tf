@@ -17,3 +17,8 @@ variable "domain_name" {
 variable "api_domain" {
   type = string
 }
+
+variable "kubernetes_version" {
+  type        = string
+  description = "RKE Kubernetes version"
+}
