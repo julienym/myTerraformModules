@@ -1,4 +1,6 @@
 resource "proxmox_vm_qemu" "vms" {
+  depends_on = [ssh_resource.cloud_init_snippet]
+
   name = "${var.name}.${var.domain_name}"
 
   #Provisionning settings
@@ -51,9 +53,9 @@ resource "proxmox_vm_qemu" "vms" {
   }
 
   #Cloud-init settings by snippet
-  cicustom                = var.snippet_filename != "" ? "user=local:snippets/${var.snippet_filename}" : null
-  cloudinit_cdrom_storage = var.storage
-  ipconfig0               = "${var.gateway != null ? "gw=${var.gateway}," : ""}ip=${var.ipconfig}"
+  cicustom = var.snippet_path
+  # cloudinit_cdrom_storage = var.storage
+  ipconfig0 = "${var.gateway != null ? "gw=${var.gateway}," : ""}ip=${var.ipconfig}"
 
   #User datas
   ciuser  = var.ssh.user
@@ -70,7 +72,7 @@ resource "proxmox_vm_qemu" "vms" {
     type                = "ssh"
     user                = var.ssh.user
     private_key         = file(var.ssh.private_key)
-    host                = "${var.name}.${var.domain_name}"
+    host                = self.default_ipv4_address
     port                = var.ssh.port
     bastion_host        = var.bastion.host != "" ? var.bastion.host : null
     bastion_user        = var.bastion.host != "" ? var.bastion.user : null

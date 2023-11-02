@@ -1,7 +1,7 @@
-variable "snippet_filename" {
+variable "snippet_path" {
   type        = string
   default     = ""
-  description = "Snippet filename"
+  description = "Snippet file full path"
 }
 
 variable "name" {
@@ -82,6 +82,7 @@ variable "ssh" {
   }
 }
 
+variable "proxmox_ssh" {} #TODO
 variable "bastion" {
   type = map(string)
   default = {
@@ -110,11 +111,21 @@ variable "dns" {
 
 variable "bootdisk" {
   type    = string
-  default = "scsi0"
+  default = "virtio0"
 }
 
 variable "ram_balloon" {
   type        = number
   default     = 1
   description = "Should memory ballooing be enable ? 1 = true"
+}
+
+variable "cloud_init" {
+  type        = string
+  default     = ""
+  description = "Cloud-init user data yaml"
+}
+
+variable "ssh_snippet_path" {
+  type = string
 }
