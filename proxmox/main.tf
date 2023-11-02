@@ -67,14 +67,10 @@ resource "proxmox_vm_qemu" "vms" {
   }
 
   connection {
-    type                = "ssh"
-    user                = var.ssh.user
-    private_key         = file(var.ssh.private_key)
-    host                = self.default_ipv4_address
-    port                = var.ssh.port
-    bastion_host        = var.bastion.host != "" ? var.bastion.host : null
-    bastion_user        = var.bastion.host != "" ? var.bastion.user : null
-    bastion_port        = var.bastion.host != "" ? var.bastion.port : null
-    bastion_private_key = var.bastion.host != "" ? file(var.bastion.private_key) : ""
+    type        = "ssh"
+    user        = var.ssh.user
+    private_key = file(var.ssh.private_key)
+    host        = self.default_ipv4_address
+    port        = var.ssh.port
   }
 }

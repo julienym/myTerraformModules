@@ -117,7 +117,6 @@ variable "proxmox_ssh" {
     port             = number
     private_key_path = string
     pub_key_path     = string
-    bastion          = bool
   })
   description = "Proxmox SSH map"
   default = {
@@ -126,26 +125,7 @@ variable "proxmox_ssh" {
     port             = 22
     private_key_path = "~/.ssh/id_rsa"
     pub_key_path     = "~/.ssh/id_rsa.pub"
-    bastion          = false
   }
-}
-
-variable "bastion" {
-  type = object({
-    host             = string
-    user             = string
-    port             = number
-    public_key_path  = string
-    private_key_path = string
-  })
-  default = {
-    host             = ""
-    user             = ""
-    port             = 22
-    public_key_path  = "~/.ssh/id_rsa.pub"
-    private_key_path = "~/.ssh/id_rsa"
-  }
-  description = "SSH Bastion map"
 }
 
 variable "ipconfig" {

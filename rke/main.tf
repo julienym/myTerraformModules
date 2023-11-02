@@ -16,7 +16,8 @@ resource "rke_cluster" "this" {
       ssh_key = file(var.bastion.ssh_private_key)
     }
   }
-  kubernetes_version = "v1.23.6-rancher1-1"
+  kubernetes_version = var.kubernetes_version
+
   # services {
   #   kube_api {
   #     extra_args = {  

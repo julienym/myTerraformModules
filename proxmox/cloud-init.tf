@@ -18,11 +18,6 @@ resource "ssh_resource" "cloud_init_snippet" {
   user        = var.proxmox_ssh.user
   private_key = file(var.proxmox_ssh.private_key_path)
 
-  bastion_host        = var.proxmox_ssh.bastion ? var.bastion.host : null
-  bastion_port        = var.proxmox_ssh.bastion ? var.bastion.port : null
-  bastion_private_key = var.proxmox_ssh.bastion ? file(var.bastion.private_key_path) : null
-  bastion_user        = var.proxmox_ssh.bastion ? var.bastion.user : null
-
   timeout     = "15m"
   retry_delay = "5s"
 
