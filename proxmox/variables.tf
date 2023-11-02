@@ -1,17 +1,22 @@
 variable "snippet_path" {
   type        = string
-  default     = ""
-  description = "Snippet file full path"
+  description = "Snippet file full path. Ex. user=local:snippets/test.yaml"
 }
 
 variable "name" {
-  type = string
+  type        = string
+  description = "Proxmox VM name"
 }
+
 variable "target_node" {
-  type = string
+  type        = string
+  description = "Proxmox target node name"
 }
+
 variable "bridge" {
-  type = string
+  type        = string
+  description = "Network bridge interface name"
+  default     = "vmbr0"
 }
 
 variable "vlan" {
@@ -22,26 +27,37 @@ variable "vlan" {
 
 variable "clone" {
   type        = string
-  default     = null
   description = "VM Clone template name"
 }
 
 variable "disk_gb" {
-  type = number
+  type        = number
+  description = "Main OS disk size in GB"
+  default     = 80
 }
+
 variable "ram_mb" {
-  type = number
+  type        = number
+  default     = 2048
+  description = "Memory RAM size in MB"
 }
+
 variable "cores" {
-  type = number
+  type        = number
+  default     = 2
+  description = "CPU cores count"
 }
+
 variable "storage" {
-  type = string
+  type        = string
+  default     = "local"
+  description = "Disk storage pool name"
 }
+
 variable "onboot" {
   type        = bool
   default     = false
-  description = "Start VM on boot"
+  description = "Start VM on boot flag"
 }
 
 variable "startup" {
@@ -51,67 +67,109 @@ variable "startup" {
 }
 
 variable "macaddr" {
-  type    = string
-  default = null
+  type        = string
+  default     = null
+  description = "MAC address for VM"
 }
 
 variable "domain_name" {
-  type = string
+  type        = string
+  description = "Domain name for cloud-init user-data and VM name composition"
 }
 
-variable "data_disk" {}
+variable "data_disk" {
+  default     = {}
+  description = "Extra data disk"
+}
 
 variable "agent" {
-  type    = string
-  default = "1"
+  type        = string
+  default     = "1"
+  description = "QEMU Guest agent enable (1=true, 0=false)"
 }
 
 variable "provision_verification" {
-  type    = list(string)
-  default = ["cloud-init status --wait > /dev/null"]
+  type        = list(string)
+  description = "Post creation script to verify completion"
+  default     = ["cloud-init status --wait > /dev/null"]
 }
 
-#SSH
 variable "ssh" {
-  type = map(string)
+  type = object({
+    user        = string
+    port        = number
+    public_key  = string
+    private_key = string
+  })
   default = {
     user        = "ubuntu"
     port        = 22
     public_key  = "~/.ssh/id_rsa.pub"
     private_key = "~/.ssh/id_rsa"
   }
+  description = "SSH user-data and post creation checkup map"
 }
 
-variable "proxmox_ssh" {} #TODO
-variable "bastion" {
-  type = map(string)
+variable "proxmox_ssh" {
+  type = object({
+    host             = string
+    user             = string
+    port             = number
+    private_key_path = string
+    pub_key_path     = string
+    bastion          = bool
+  })
+  description = "Proxmox SSH map"
   default = {
-    host        = ""
-    user        = ""
-    port        = ""
-    public_key  = "~/.ssh/id_rsa.pub"
-    private_key = "~/.ssh/id_rsa"
+    host             = "pmx"
+    user             = "root"
+    port             = 22
+    private_key_path = "~/.ssh/id_rsa"
+    pub_key_path     = "~/.ssh/id_rsa.pub"
+    bastion          = false
   }
 }
 
+variable "bastion" {
+  type = object({
+    host             = string
+    user             = string
+    port             = number
+    public_key_path  = string
+    private_key_path = string
+  })
+  default = {
+    host             = ""
+    user             = ""
+    port             = 22
+    public_key_path  = "~/.ssh/id_rsa.pub"
+    private_key_path = "~/.ssh/id_rsa"
+  }
+  description = "SSH Bastion map"
+}
+
 variable "ipconfig" {
-  type    = string
-  default = "dhcp"
+  type        = string
+  default     = "dhcp"
+  description = "Cloud-init user data ip config"
 }
 
 variable "gateway" {
-  type    = string
-  default = null
+  type        = string
+  default     = null
+  description = "Cloud-init user data gateway"
 }
 
 variable "dns" {
-  type    = string
-  default = null
+  type        = string
+  default     = null
+  description = "DNS name server address"
 }
 
 variable "bootdisk" {
-  type    = string
-  default = "virtio0"
+  type        = string
+  default     = "virtio0"
+  description = "Boot disk device"
 }
 
 variable "ram_balloon" {
@@ -122,10 +180,10 @@ variable "ram_balloon" {
 
 variable "cloud_init" {
   type        = string
-  default     = ""
   description = "Cloud-init user data yaml"
 }
 
 variable "ssh_snippet_path" {
-  type = string
+  type        = string
+  description = "Proxmox host path to the snippet file"
 }

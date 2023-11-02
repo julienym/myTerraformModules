@@ -54,15 +54,13 @@ resource "proxmox_vm_qemu" "vms" {
 
   #Cloud-init settings by snippet
   cicustom = var.snippet_path
-  # cloudinit_cdrom_storage = var.storage
-  ipconfig0 = "${var.gateway != null ? "gw=${var.gateway}," : ""}ip=${var.ipconfig}"
 
-  #User datas
-  ciuser  = var.ssh.user
-  sshkeys = file(var.ssh.public_key)
-
+  #User data
+  ciuser       = var.ssh.user
+  sshkeys      = file(var.ssh.public_key)
   nameserver   = var.dns
   searchdomain = var.domain_name
+  ipconfig0    = "${var.gateway != null ? "gw=${var.gateway}," : ""}ip=${var.ipconfig}"
 
   provisioner "remote-exec" {
     inline = var.provision_verification
