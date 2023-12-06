@@ -17,13 +17,13 @@ variable "chart_version" {
 }
 
 variable "values" {
-  default = {}
+  type    = list(string)
+  default = []
 }
 
-variable "secrets_list" {
-  type      = list(string)
-  default   = []
-  sensitive = true
+variable "secret_values" {
+  description = "Secret values map"
+  default     = {}
 }
 
 variable "namespace" {

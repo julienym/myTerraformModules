@@ -6,14 +6,14 @@ resource "helm_release" "this" {
   create_namespace = true
   namespace        = var.namespace
 
-  values = var.secrets_list
+  values = var.values
 
-  dynamic "set" {
-    for_each = { for k, v in var.values : k => v if v != null }
+  dynamic "set_sensitive" {
+    for_each = var.secret_values
 
     content {
-      name  = set.key
-      value = set.value
+      name  = set_sensitive.key
+      value = set_sensitive.value
     }
   }
 }
