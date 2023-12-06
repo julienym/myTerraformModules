@@ -10,7 +10,7 @@ resource "proxmox_vm_qemu" "vms" {
   full_clone  = false
 
   #CPU settings
-  cpu     = "kvm64"
+  cpu     = var.cpu
   cores   = var.cores
   sockets = 1
 
@@ -27,17 +27,15 @@ resource "proxmox_vm_qemu" "vms" {
     discard = "on" #assume SSD
   }
 
-  dynamic "disk" {
-    for_each = var.data_disk
-
-    content {
-      type    = "virtio"
-      size    = "${disk.value.size * 1024 - 820}M"
-      storage = disk.value.storage
-      cache   = disk.value.cache
-      discard = "on" #assume SSD
-    }
+  disk {
+    type     = trimsuffix(var.bootdisk, "0")
+    size     = "${var.data_disk.size * 1024 - 820}M"
+    storage  = var.data_disk.storage
+    cache    = var.data_disk.cache
+    discard  = "on" #assume SSD
+    iothread = 1
   }
+  
   bootdisk = var.bootdisk
   agent    = var.agent
   onboot   = var.onboot
@@ -62,6 +60,10 @@ resource "proxmox_vm_qemu" "vms" {
   searchdomain = var.domain_name
   ipconfig0    = "${var.gateway != null ? "gw=${var.gateway}," : ""}ip=${var.ipconfig}"
 
+  # provisioner "local-exec" {
+  #   command = "while ! ping -q -c 1 ${var.agent == "1" ? self.default_ipv4_address : "${var.name}.${var.domain_name}"} >/dev/null ; do sleep 1; done ; echo 'Server online'"
+  # }
+
   provisioner "remote-exec" {
     inline = var.provision_verification
   }
@@ -70,7 +72,12 @@ resource "proxmox_vm_qemu" "vms" {
     type        = "ssh"
     user        = var.ssh.user
     private_key = file(var.ssh.private_key)
-    host        = self.default_ipv4_address
+    host        = var.agent == "1" ? self.default_ipv4_address : "${var.name}.${var.domain_name}"
     port        = var.ssh.port
   }
+
+  # timeouts {
+  #   create = "10m"
+  #   # delete = "2h"
+  # }
 }

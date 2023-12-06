@@ -167,3 +167,9 @@ variable "ssh_snippet_path" {
   type        = string
   description = "Proxmox host path to the snippet file"
 }
+
+variable "cpu" {
+  type        = string
+  default     = "kvm64"
+  description = "CPU type for the VM"
+}
