@@ -12,7 +12,7 @@ resource "proxmox_vm_qemu" "vms" {
   #CPU settings
   cpu     = var.cpu
   cores   = var.cores
-  sockets = 1
+  sockets = var.sockets
 
   #RAM settings
   memory  = var.ram_mb
@@ -20,20 +20,27 @@ resource "proxmox_vm_qemu" "vms" {
 
   #Disk settings
   disk {
-    type    = trimsuffix(var.bootdisk, "0")
-    size    = "${var.disk_gb}G"
-    storage = var.storage
-    cache   = "writeback"
-    discard = "on" #assume SSD
+    type     = "disk"
+    slot     = var.bootdisk
+    size     = "${var.disk_gb}G"
+    storage  = var.storage
+    cache    = var.cache
+    discard  = true #assume SSD
+    iothread = true
   }
 
-  disk {
-    type     = trimsuffix(var.bootdisk, "0")
-    size     = "${var.data_disk.size * 1024 - 820}M"
-    storage  = var.data_disk.storage
-    cache    = var.data_disk.cache
-    discard  = "on" #assume SSD
-    iothread = 1
+  dynamic "disk" {
+    for_each = var.data_disks
+
+    content {
+      type     = "disk"
+      slot     = disk.value.slot
+      size     = "${disk.value.size * 1024 - 820}M"
+      storage  = disk.value.storage
+      cache    = disk.value.cache
+      discard  = true #assume SSD
+      iothread = true
+    }
   }
   
   bootdisk = var.bootdisk
@@ -74,6 +81,10 @@ resource "proxmox_vm_qemu" "vms" {
     private_key = file(var.ssh.private_key)
     host        = var.agent == "1" ? self.default_ipv4_address : "${var.name}.${var.domain_name}"
     port        = var.ssh.port
+  }
+
+  lifecycle {
+    ignore_changes = [cicustom]
   }
 
   # timeouts {

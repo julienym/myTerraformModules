@@ -28,6 +28,7 @@ variable "vlan" {
 variable "clone" {
   type        = string
   description = "VM Clone template name"
+  default     = null
 }
 
 variable "disk_gb" {
@@ -77,9 +78,9 @@ variable "domain_name" {
   description = "Domain name for cloud-init user-data and VM name composition"
 }
 
-variable "data_disk" {
+variable "data_disks" {
   default     = {}
-  description = "Extra data disk"
+  description = "Extra data disks"
 }
 
 variable "agent" {
@@ -172,4 +173,16 @@ variable "cpu" {
   type        = string
   default     = "kvm64"
   description = "CPU type for the VM"
+}
+
+variable "sockets" {
+  type        = number
+  default     = 1
+  description = "Number of CPU sockets"
+}
+
+variable "cache" {
+  default     = "writeback"
+  type        = string
+  description = "Cache mode for the main/os disk"
 }
