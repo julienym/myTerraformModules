@@ -4,45 +4,65 @@ resource "proxmox_vm_qemu" "vms" {
   name = "${var.name}.${var.domain_name}"
 
   #Provisionning settings
-  os_type     = "cloud-init"
-  target_node = var.target_node
-  clone       = var.clone
-  full_clone  = false
+  os_type                = "cloud-init"
+  target_node            = var.target_node
+  clone                  = var.clone
+  full_clone             = false
+  define_connection_info = false
+  automatic_reboot = false
+  # ciupgrade = false
 
   #CPU settings
-  cpu     = var.cpu
-  cores   = var.cores
-  sockets = var.sockets
+  cpu_type = var.cpu
+  cores    = var.cores
+  sockets  = var.sockets
 
   #RAM settings
   memory  = var.ram_mb
   balloon = var.ram_balloon
 
   #Disk settings
-  disk {
-    type     = "disk"
-    slot     = var.bootdisk
-    size     = "${var.disk_gb}G"
-    storage  = var.storage
-    cache    = var.cache
-    discard  = true #assume SSD
-    iothread = true
-  }
-
-  dynamic "disk" {
-    for_each = var.data_disks
-
-    content {
-      type     = "disk"
-      slot     = disk.value.slot
-      size     = "${disk.value.size * 1024 - 820}M"
-      storage  = disk.value.storage
-      cache    = disk.value.cache
-      discard  = true #assume SSD
-      iothread = true
+  disks {
+    ide {
+      ide0 {
+        cloudinit {
+          storage = "SSD"
+        }
+      }
+      ide2 {
+        cdrom {
+          passthrough = false
+        }
+      }
+    }
+    virtio {
+      virtio0 {
+        disk {
+          # type     = "disk"
+          # slot     = var.bootdisk
+          size      = "${var.disk_gb}G"
+          storage   = var.storage
+          cache     = var.cache
+          discard   = var.discard
+          iothread  = var.iothread
+          replicate = var.replicate
+        }
+      }
+      virtio1 {
+        disk {
+          # type     = "disk"
+          # slot     = disk.value.slot
+          size      = "${var.data_disk.size * 1024 - 820}M"
+          storage   = var.data_disk.storage
+          cache     = var.data_disk.cache
+          discard   = try(var.data_disk.discard, var.discard)
+          iothread  = try(var.data_disk.iothread, var.iothread)
+          replicate = try(var.data_disk.replicate, var.replicate)
+        }
+      }
     }
   }
-  
+
   bootdisk = var.bootdisk
   agent    = var.agent
   onboot   = var.onboot
@@ -51,6 +71,7 @@ resource "proxmox_vm_qemu" "vms" {
 
   #Network settings
   network {
+    id      = 0
     model   = "virtio"
     bridge  = var.bridge
     macaddr = var.macaddr

@@ -78,9 +78,9 @@ variable "domain_name" {
   description = "Domain name for cloud-init user-data and VM name composition"
 }
 
-variable "data_disks" {
+variable "data_disk" {
   default     = {}
-  description = "Extra data disks"
+  description = "Extra data disk"
 }
 
 variable "agent" {
@@ -186,3 +186,22 @@ variable "cache" {
   type        = string
   description = "Cache mode for the main/os disk"
 }
+
+variable "discard" {
+  default     = "true"
+  type        = bool
+  description = "Disk discard emulation"
+}
+
+variable "iothread" {
+  default     = "true"
+  type        = bool
+  description = "Disk io thread"
+}
+
+variable "replicate" {
+  default     = "true"
+  type        = bool
+  description = "Disk replication job flag"
+}
+
