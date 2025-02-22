@@ -78,9 +78,14 @@ variable "domain_name" {
   description = "Domain name for cloud-init user-data and VM name composition"
 }
 
-variable "data_disk" {
+variable "data_disks" {
   default     = {}
-  description = "Extra data disk"
+  description = "Extra data disks"
+}
+
+variable "ide_drive" {
+  default     = null
+  description = "IDE drive (cd-rom iso or cloud-init)"
 }
 
 variable "agent" {

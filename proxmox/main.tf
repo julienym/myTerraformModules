@@ -9,7 +9,7 @@ resource "proxmox_vm_qemu" "vms" {
   clone                  = var.clone
   full_clone             = false
   define_connection_info = false
-  automatic_reboot = false
+  automatic_reboot       = false
   # ciupgrade = false
 
   #CPU settings
@@ -24,50 +24,77 @@ resource "proxmox_vm_qemu" "vms" {
   #Disk settings
   disks {
     ide {
-      ide0 {
-        cloudinit {
-          storage = "SSD"
-        }
-      }
-      ide2 {
-        cdrom {
-          passthrough = false
+      dynamic "ide0" {
+        for_each = var.ide_drive != null ? toset([var.ide_drive]) : toset([])
+
+        content {
+          dynamic "cloudinit" {
+            for_each = ide0.key == "cloud-init" ? toset([ide0.key]) : toset([])
+
+            content {
+              storage = var.storage
+            }
+          }
+
+          dynamic "cdrom" {
+            for_each = ide0.key != "cloud-init" ? toset([ide0.key]) : toset([])
+
+            content {
+              iso = ide0.key
+            }
+          }
         }
       }
     }
+
     virtio {
       virtio0 {
         disk {
-          # type     = "disk"
-          # slot     = var.bootdisk
           size      = "${var.disk_gb}G"
           storage   = var.storage
           cache     = var.cache
-          discard   = var.discard
-          iothread  = var.iothread
-          replicate = var.replicate
+          discard   = true #assume SSD
+          iothread  = try(var.iothread, true)
+          replicate = try(var.replicate, true)
         }
       }
-      virtio1 {
-        disk {
-          # type     = "disk"
-          # slot     = disk.value.slot
-          size      = "${var.data_disk.size * 1024 - 820}M"
-          storage   = var.data_disk.storage
-          cache     = var.data_disk.cache
-          discard   = try(var.data_disk.discard, var.discard)
-          iothread  = try(var.data_disk.iothread, var.iothread)
-          replicate = try(var.data_disk.replicate, var.replicate)
+
+      dynamic "virtio1" {
+        for_each = { for k, v in var.data_disks : k => v if k == try(keys(var.data_disks)[0], null) }
+
+        content {
+          disk {
+            size      = "${virtio1.value.size * 1024 - 820}M"
+            storage   = virtio1.value.storage
+            cache     = virtio1.value.cache
+            discard   = try(virtio1.value.discard, true) #assume SSD
+            iothread  = try(virtio1.value.iothread, true)
+            replicate = try(virtio1.value.replicate, true)
+          }
+        }
+      }
+      dynamic "virtio2" {
+        for_each = { for k, v in var.data_disks : k => v if k == try(keys(var.data_disks)[1], null) }
+
+        content {
+          disk {
+            size      = "${virtio2.value.size * 1024 - 820}M"
+            storage   = virtio2.value.storage
+            cache     = virtio2.value.cache
+            discard   = try(virtio2.value.discard, true) #assume SSD
+            iothread  = try(virtio2.value.iothread, true)
+            replicate = try(virtio2.value.replicate, true)
+          }
         }
       }
     }
   }
 
-  bootdisk = var.bootdisk
-  agent    = var.agent
-  onboot   = var.onboot
-  startup  = var.startup
-  scsihw   = "virtio-scsi-pci"
+  # bootdisk = var.bootdisk
+  agent  = var.agent
+  onboot = var.onboot
+  # startup  = var.startup
+  scsihw = "virtio-scsi-pci"
 
   #Network settings
   network {
